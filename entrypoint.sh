@@ -8,150 +8,147 @@ WEB_PASSWORD=${WEB_PASSWORD:-'password'}
 
 # 生成 web.js 配置文件
 generate_config() {
-  cat > config.json << EOF
+  cat > /app/config.json << EOF
 {
     "log":{
         "access":"/dev/null",
         "error":"/dev/null",
         "loglevel":"none"
     },
-    "inbounds":[
-        {
-            "port":8080,
-            "protocol":"vless",
-            "settings":{
-                "clients":[
-                    {
-                        "id":"${UUID}",
-                        "flow":"xtls-rprx-vision"
-                    }
-                ],
-                "decryption":"none",
-                "fallbacks":[
-                    {
-                        "dest":3001
-                    },
-                    {
-                        "path":"/${WSPATH}-vless",
-                        "dest":3002
-                    },
-                    {
-                        "path":"/${WSPATH}-vmess",
-                        "dest":3003
-                    },
-                    {
-                        "path":"/${WSPATH}-trojan",
-                        "dest":3004
-                    },
-                    {
-                        "path":"/${WSPATH}-shadowsocks",
-                        "dest":3005
-                    }
-                ]
-            },
-            "streamSettings":{
-                "network":"tcp"
-            }
-        },
-        {
-            "port":3001,
-            "listen":"127.0.0.1",
-            "protocol":"vless",
-            "settings":{
-                "clients":[
-                    {
-                        "id":"${UUID}"
-                    }
-                ],
-                "decryption":"none"
-            },
-            "streamSettings":{
-                "network":"ws",
-                "security":"none"
-            }
-        },
-        {
-            "port":3002,
-            "listen":"127.0.0.1",
-            "protocol":"vless",
-            "settings":{
-                "clients":[
-                    {
-                        "id":"${UUID}",
-                        "level":0
-                    }
-                ],
-                "decryption":"none"
-            },
-            "streamSettings":{
-                "network":"ws",
-                "security":"none",
-                "wsSettings":{
-                    "path":"/${WSPATH}-vless"
+   "inbounds":[
+    {
+        "port":8080,
+        "protocol":"vless",
+        "settings":{
+            "clients":[
+                {
+                    "id":"${UUID}",
+                    "flow":"xtls-rprx-vision"
                 }
-            },
-            "sniffing":{
-                "enabled":true,
-                "destOverride":[
-                    "http",
-                    "tls",
-                    "quic"
-                ],
-                "metadataOnly":false
+            ],
+            "decryption":"none",
+            "fallbacks":[
+                {
+                    "dest":3001
+                },
+                {
+                    "path":"/${WSPATH}-vless",
+                    "dest":3002
+                },
+                {
+                    "path":"/${WSPATH}-vmess",
+                    "dest":3003
+                },
+                {
+                    "path":"/${WSPATH}-trojan",
+                    "dest":3004
+                },
+                {
+                    "path":"/${WSPATH}-shadowsocks",
+                    "dest":3005
+                }
+            ]
+        },
+        "streamSettings":{
+            "network":"tcp"
+        }
+    },
+    {
+        "port":3001,
+        "listen":"127.0.0.1",
+        "protocol":"vless",
+        "settings":{
+            "clients":[
+                {
+                    "id":"${UUID}"
+                }
+            ],
+            "decryption":"none"
+        },
+        "streamSettings":{
+            "network":"ws",
+            "security":"none"
+        }
+    },
+    {
+        "port":3002,
+        "listen":"127.0.0.1",
+        "protocol":"vless",
+        "settings":{
+            "clients":[
+                {
+                    "id":"${UUID}",
+                    "level":0
+                }
+            ],
+            "decryption":"none"
+        },
+        "streamSettings":{
+            "network":"ws",
+            "security":"none",
+            "wsSettings":{
+                "path":"/${WSPATH}-vless"
             }
         },
-        {
-            "port":3003,
-            "listen":"127.0.0.1",
-            "protocol":"vmess",
-            "settings":{
-                "clients":[
-                    {
-                        "id":"${UUID}",
-                        "alterId":0
-                    }
-                ]
-            },
-            "streamSettings":{
-                "network":"ws",
-                "wsSettings":{
-                    "path":"/${WSPATH}-vmess"
+        "sniffing":{
+            "enabled":false,  // 关闭流量探测
+            "destOverride":[
+                "http",
+                "tls"
+            ],
+            "metadataOnly":false
+        }
+    },
+    {
+        "port":3003,
+        "listen":"127.0.0.1",
+        "protocol":"vmess",
+        "settings":{
+            "clients":[
+                {
+                    "id":"${UUID}",
+                    "alterId":0
                 }
-            },
-            "sniffing":{
-                "enabled":true,
-                "destOverride":[
-                    "http",
-                    "tls",
-                    "quic"
-                ],
-                "metadataOnly":false
+            ]
+        },
+        "streamSettings":{
+            "network":"ws",
+            "wsSettings":{
+                "path":"/${WSPATH}-vmess"
             }
         },
-        {
-            "port":3004,
-            "listen":"127.0.0.1",
-            "protocol":"trojan",
-            "settings":{
-                "clients":[
-                    {
-                        "password":"${UUID}"
-                    }
-                ]
-            },
-            "streamSettings":{
-                "network":"ws",
-                "security":"none",
-                "wsSettings":{
-                    "path":"/${WSPATH}-trojan"
+        "sniffing":{
+            "enabled":false,  // 关闭流量探测
+            "destOverride":[
+                "http",
+                "tls"
+            ],
+            "metadataOnly":false
+        }
+    },
+    {
+        "port":3004,
+        "listen":"127.0.0.1",
+        "protocol":"trojan",
+        "settings":{
+            "clients":[
+                {
+                    "password":"${UUID}"
                 }
-            },
-            "sniffing":{
-                "enabled":true,
-                "destOverride":[
-                    "http",
-                    "tls",
-                    "quic"
+            ]
+        },
+        "streamSettings":{
+            "network":"ws",
+            "security":"none",
+            "wsSettings":{
+                "path":"/${WSPATH}-trojan"
+            }
+        },
+        "sniffing":{
+            "enabled":false,  // 关闭流量探测
+            "destOverride":[
+                "http",
+                "tls"
                 ],
                 "metadataOnly":false
             }
@@ -179,8 +176,7 @@ generate_config() {
                 "enabled":true,
                 "destOverride":[
                     "http",
-                    "tls",
-                    "quic"
+                    "tls"
                 ],
                 "metadataOnly":false
             }
